@@ -1,0 +1,39 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Date: Sat, 22 Mar 2025 12:27:15 +0000
+Label: stable
+Origin: ctu-mrs
+MD5Sum:
+ 0bd4a2cdc5c956fe61abada37474cad5             9086 Packages
+ a6cc62d344e7b2e6e6a511108a2894ab             2329 Packages.gz
+ c42f033a8e83a6706ae73b8ba327b093               68 Release
+SHA1:
+ 5e9a8322b6dd28b18a04be24aabe156df2269503             9086 Packages
+ c3d81bbfa5a6bbb915e6384b7899cfea3c1156b2             2329 Packages.gz
+ e6011c5c843b62d472c2c40c3ed271a99ce31ac8               68 Release
+SHA256:
+ 31b1e3c74479a3f6e2f79b630cab8bf22f1bd87cbfab346172893b4267125008             9086 Packages
+ f1f6b0a229751917130e563891b29c892ff1b8ba94b07d9b43f0c5dd143a4328             2329 Packages.gz
+ 711a6ba9cde36cc756e2033a5582256e6a6826a4543bf4af434dafe41fd48b0a               68 Release
+SHA512:
+ 80318b9a23fbb1a81391a18a6c7aa58b1d31e0a91d7c9ef6d6c9934244c6f38303e9202d0b55f48eabea31446e065480d7f9cb8ede65cf058050dcb00c4a48d5             9086 Packages
+ f2b150c2224e39d511ce4dfdc3f36dc6eb820fa20f04a56914e6845ba0ec56910cee84ede383f13271a88f2cc8275bf6419c785ddef5238db9d6483bf7862937             2329 Packages.gz
+ 1e750534024da60144248be1758df8b0c3280ec2555ef7dfb9a53ce277c82d38313ad3a44a1e8f11314064c055c3e7d83892b10ab5abd16dae72706ad8e77354               68 Release
+-----BEGIN PGP SIGNATURE-----
+
+iQJLBAEBCgA1FiEEb03deYxGy/GR9vy/sp02ABwZjREFAmferKMXHHRvbWFzLmJh
+Y2FAZmVsLmN2dXQuY3oACgkQsp02ABwZjRHVWA//ZoZuH8jGCrLtq/SqdgVmobd7
+Sz3dRtTdvYk+DePxpYOCKqhotLapz+yjdQwyKyBrK37olYr+d19bMRI39Qd6GIjs
+k0Cle1L2kOUg4Xohgj9DTBhDkWSayv5YTt8KgWNiawDGaNiJcRkkxZTFFwW+zBhb
+j4V78CZj8frB6UXidLCpqhaM3HC9KhKZmMwSprI5BQhJYbM/kHlhJ/OV15clnsHq
+Ue/3u780u9BT+pivqBSEJWJyrs7boWTu5kGDIJ2gRfK1qc4lDdoWTy1913SsYBuo
+pbkFwzP2nG2inXRHdeJsN6+/7MF58cRDXH1DMwjSEzoBMujzUVgXRcU2vdoNJx4L
+9nGpBxzQS1MVHwYBNUndGLMm2bjnoT1mU5JRcIFnyD1Rrl102lp4zBYK544rnOKq
+74/dI5G4/ICffJr2JJ9k5RrKoIj8QZCPiYPO/bmZNGfycxPLa1UGdCDKX+odDmoa
+Q0InL1QPRXvY1Pfv2mf3s1/zv5Oj112szpYVLLy9Tz1l2bbP013jU3SL94P9bHFg
+5vTUZ7fT410vdtvagWZHoSRoaYISWn/Bqzpkc3cJlJIEYoi8b3nKkRYyCK7C2XnU
+/Vq0BFjmo+tAMrzoxNYwIW62CEJDwA9VzijhhnurqEzyqhV/Y+vvo6pq54Iw0Zc4
+Tvymdq9afkFo+wDosbA=
+=ZaWJ
+-----END PGP SIGNATURE-----
