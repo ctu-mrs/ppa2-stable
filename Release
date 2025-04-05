@@ -1,0 +1,19 @@
+Date: Sat, 05 Apr 2025 19:32:26 +0000
+Label: stable
+Origin: ctu-mrs
+MD5Sum:
+ 3732a7dd4d3719bc84e3e19e714e44cf            16520 Packages
+ 6a6dbbaeb97f2ef467e076d9939f8686             3620 Packages.gz
+ 810ac851142f1b78bcd9efeb4133fbbd               68 Release
+SHA1:
+ 0fd119c5e4948624a12d97932289dccfdbf0ce51            16520 Packages
+ f74306e42d75f2650bfb3fe749cfb947aa99b00f             3620 Packages.gz
+ 78f438a30353ed3358637ccb74fd98576476fcef               68 Release
+SHA256:
+ ea7866091428d76302ef0bd4ab0d275fc99f71f9954a24ff6c01f1e72882dbde            16520 Packages
+ 1d2792df6d8b1876b1bd019e4fb73efb66a988753ce2d07575b59d4e948162ed             3620 Packages.gz
+ ddc5d8fd218f9afd2754f039d690dc27edf835f602e8fc47954d3bae85b2267b               68 Release
+SHA512:
+ 9cf3e1c1debc883428330c6539161a8673fcf7978d80345f1e5e1bad297b9e82732c9556294cd206b66b0b21f10b58bcbef24bcb43ccac835ca05297fd031af5            16520 Packages
+ c4f7e16435ad6430edbfe96871b7a6d62dca881213a29d3ac90a0760f96ffa159ac1eb46b2a418ddeb55717007610009f32aefc403646aba365f0c4c85e92ebd             3620 Packages.gz
+ 93addd4a38b049ac3c545c958975669263b183b7bce9f756f58dd183981cc2cdff90e447166aef98f95d29b44d7e3c88ea27e94cd102b311168f7d827f921aa5               68 Release
