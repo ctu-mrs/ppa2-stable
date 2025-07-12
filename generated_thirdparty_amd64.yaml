@@ -1,0 +1,9 @@
+nlopt:
+    ubuntu: [ros-jazzy-nlopt]
+  
+mrs_realsense:
+    ubuntu: [ros-jazzy-mrs-realsense]
+  
+bluefox2:
+    ubuntu: [ros-jazzy-bluefox2]
+  
