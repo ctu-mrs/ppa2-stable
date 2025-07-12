@@ -1,0 +1,6 @@
+mrs_realsense:
+    ubuntu: [ros-jazzy-mrs-realsense]
+  
+nlopt:
+    ubuntu: [ros-jazzy-nlopt]
+  
