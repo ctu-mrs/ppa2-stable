@@ -1,0 +1,39 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Date: Sat, 09 Aug 2025 21:11:44 +0000
+Label: stable
+Origin: ctu-mrs
+MD5Sum:
+ 14b4ed33b822b610b5d1b51996a156f8            56579 Packages
+ 4b6951f2f6e8ced279e7d8177d003e0e            10858 Packages.gz
+ baded93b2628c067f7daf76bfda7509c               68 Release
+SHA1:
+ 1f689c333d7f11f3fc9f6d354cbdd73f82764458            56579 Packages
+ 230b43f60db7eb1e81e05678d6e43be534d5aab6            10858 Packages.gz
+ 2cbce32c3ce9dd81da11450593ee0da2c33ccdcb               68 Release
+SHA256:
+ c4b304f1e40f3afb8bc34c307fd7b367edd8b6592ebbfd314d32526948953833            56579 Packages
+ fde7dc3f91003b73b9c77ff2479386d931bbe5907ec730fb5173f99285673215            10858 Packages.gz
+ 19d5cc245c04482989f474a39763c88e09aa1a5acb3e58cf4fec9e49208da2d9               68 Release
+SHA512:
+ a7ea37dbf77145dfdabf887c1f140f5b5357400c198974b81d8d2738b6b4ec75df8e46cbc60e58fa9220c8c9902c0e558540a048cc04f5d7679cc9347f9c29a4            56579 Packages
+ 2f13b1e80b6afa88c29f38918d4b9deec4c78f56c60c4c17c11d9de8bae2b9e0e258d09cfc8e1dc88de832e60f92f28fd236f3a8a855e44fff788391e191ab25            10858 Packages.gz
+ c318da30be99bd2d587899bc1f473bb4a2085b311e043beb28e7eee831e0af5bd826ffe41f2baa7902d4fc1e86c37210dbb6d7940d4792033815eb85af0aa55b               68 Release
+-----BEGIN PGP SIGNATURE-----
+
+iQJLBAEBCgA1FiEEb03deYxGy/GR9vy/sp02ABwZjREFAmiXuZAXHHRvbWFzLmJh
+Y2FAZmVsLmN2dXQuY3oACgkQsp02ABwZjRFyow//eu5AoHqn94cQln9eZySbnbfH
+3tDpCDyZYITUBKdEW6n4iQrYzNmUdkwnPKOfLRnOZJsrLotelXDMZ9z+i3wt+ZY5
+fT0mBNUeDn7dk/6RAwJ4TjaijGLfyMBIocEw3L3f23yy6VQQwrngv8B8AO2e3jsg
+Aus6EaLtzKJVt1x0l3zFKKiVRRtVVQUxo6dsBMibClCZ6dmbxfgGGScJbCtpuD5O
+srFOAbP1Jx6gEbylnK0a3xpeZn3NEWtQN/vkartl/a3WD+D+ihC9GEn+byIF9JHn
+mg248wsA5MzPZ7UY/E3VuacueY3ZP3pr8h9Qo3egfULNi5Ax8GVCxL2qMX+5lIGU
+Ca/3q8fw02ECxDxQA+eqprMAUQRQiYbNgL+BJW/t6qnpmqQDLWS5KKpwsKazj7Ko
+NR0ZSB/d9irIh5iw/JVmTOVZ6UqAk3XoR1FwFdPs6D54w8wb/GIkhXf6xjirM5HP
+FOmNNm2xY0KSEA9RkpXa48gCEaMwo3cHzXxOG/oQSpHGBoR701WB4h0fEs/fEllq
+Q1lKAUScnocdg02GW7L9pcyG+MohcYn7usRm9jjALhFN3e5gF562HFgZFIfJw18H
+jh+jdw43AvpCNqj/1BtOAbv0lA0YkE4pPlZpx3Kpb/rnPvLN7mxFRqw21Tjyo6ji
+n9c1LJlckKkVFRzPk5w=
+=SBIQ
+-----END PGP SIGNATURE-----
