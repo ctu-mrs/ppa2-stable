@@ -10,6 +10,9 @@ mrs_modules_msgs:
 mrs_lib:
     ubuntu: [ros-jazzy-mrs-lib]
   
+mrs_vins_imu_filter:
+    ubuntu: [ros-jazzy-mrs-vins-imu-filter]
+  
 mrs_uav_testing:
     ubuntu: [ros-jazzy-mrs-uav-testing]
   
@@ -55,9 +58,9 @@ mrs_uav_flightforge_simulator:
 mrs_uav_core:
     ubuntu: [ros-jazzy-mrs-uav-core]
   
-mrs_uav_system_full:
-    ubuntu: [ros-jazzy-mrs-uav-system-full]
-  
 mrs_uav_system:
     ubuntu: [ros-jazzy-mrs-uav-system]
+  
+mrs_uav_system_full:
+    ubuntu: [ros-jazzy-mrs-uav-system-full]
   
