@@ -58,9 +58,9 @@ mrs_uav_trackers:
 mrs_uav_core:
     ubuntu: [ros-jazzy-mrs-uav-core]
   
-mrs_uav_system_full:
-    ubuntu: [ros-jazzy-mrs-uav-system-full]
-  
 mrs_uav_system:
     ubuntu: [ros-jazzy-mrs-uav-system]
+  
+mrs_uav_system_full:
+    ubuntu: [ros-jazzy-mrs-uav-system-full]
   
