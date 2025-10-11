@@ -10,11 +10,11 @@ ouster_sensor_msgs:
 ouster_ros:
     ubuntu: [ros-jazzy-ouster-ros]
   
-ov_core:
-    ubuntu: [ros-jazzy-ov-core]
-  
 ov_data:
     ubuntu: [ros-jazzy-ov-data]
+  
+ov_core:
+    ubuntu: [ros-jazzy-ov-core]
   
 ov_eval:
     ubuntu: [ros-jazzy-ov-eval]
