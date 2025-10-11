@@ -1,17 +1,17 @@
 bluefox2:
     ubuntu: [ros-jazzy-bluefox2]
   
-ov_data:
-    ubuntu: [ros-jazzy-ov-data]
-  
 ov_core:
     ubuntu: [ros-jazzy-ov-core]
   
-ov_eval:
-    ubuntu: [ros-jazzy-ov-eval]
+ov_data:
+    ubuntu: [ros-jazzy-ov-data]
   
 ov_init:
     ubuntu: [ros-jazzy-ov-init]
+  
+ov_eval:
+    ubuntu: [ros-jazzy-ov-eval]
   
 ov_msckf:
     ubuntu: [ros-jazzy-ov-msckf]
@@ -19,11 +19,11 @@ ov_msckf:
 zenoh_cpp_vendor:
     ubuntu: [ros-jazzy-zenoh-cpp-vendor]
   
-zenoh_security_tools:
-    ubuntu: [ros-jazzy-zenoh-security-tools]
-  
 rmw_zenoh_cpp:
     ubuntu: [ros-jazzy-rmw-zenoh-cpp]
+  
+zenoh_security_tools:
+    ubuntu: [ros-jazzy-zenoh-security-tools]
   
 ouster_sensor_msgs:
     ubuntu: [ros-jazzy-ouster-sensor-msgs]
