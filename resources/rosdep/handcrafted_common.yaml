@@ -25,6 +25,10 @@ px4:
 libcamera_ros:
   ubuntu: [ros-jazzy-libcamera-ros]
 
+# temporary rosdep for octomap_planner
+mrs_subt_planning_lib:
+  ubuntu: [ros-jazzy-mrs-subt-planning-lib]
+
 # other dependencies
 python3-jinja2:
   ubuntu: [python3-jinja2]
