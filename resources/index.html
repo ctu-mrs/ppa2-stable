@@ -410,6 +410,24 @@
 			border: 1px solid var(--line);
 		}
 
+		.update-controls {
+			display: inline-flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
+
+		.checkbox-inline {
+			display: inline-flex;
+			align-items: center;
+			color: var(--muted);
+		}
+
+		.checkbox-inline input {
+			margin: 0;
+		}
+
 		.list-head-actions {
 			display: flex;
 			align-items: center;
@@ -557,7 +575,7 @@
 		.col-version { width: 20%; }
 		.col-arch { width: 13%; }
 		.col-maintainer { width: 16%; }
-		.col-deploy { width: 12%; }
+		.col-build { width: 12%; }
 		.col-artifact { width: 10%; }
 
 		.version-cell {
@@ -1034,7 +1052,12 @@
 
 				<div class="status-bar">
 					<span id="status-line">Loading repository metadata…</span>
-					<span id="update-countdown">Next refresh in --s</span>
+					<span class="update-controls">
+						<span id="update-countdown">Next refresh in --s</span>
+						<label class="checkbox-inline" for="auto-refresh-toggle">
+							<input id="auto-refresh-toggle" type="checkbox" checked aria-label="Toggle auto refresh">
+						</label>
+					</span>
 				</div>
 			</section>
 		</div>
@@ -1089,6 +1112,7 @@
 			inRelease: null,
 			releaseIndexes: [],
 			releaseRawText: "",
+			sourcesRawText: "",
 			packagesRawText: "",
 			lastSnapshotFingerprint: "",
 			sources: [],
@@ -1108,7 +1132,8 @@
 			backgroundUpdateTimerId: null,
 			backgroundUpdateInFlight: false,
 			backgroundCountdownTimerId: null,
-			nextBackgroundUpdateAt: 0
+			nextBackgroundUpdateAt: 0,
+			autoRefreshEnabled: true
 		};
 
 		const elements = {
@@ -1129,6 +1154,7 @@
 			detailBack: document.getElementById("detail-back"),
 			statusLine: document.getElementById("status-line"),
 			updateCountdown: document.getElementById("update-countdown"),
+			autoRefreshToggle: document.getElementById("auto-refresh-toggle"),
 			packageCount: document.getElementById("package-count"),
 			stateSummary: document.getElementById("state-summary"),
 			statPackages: document.getElementById("stat-packages"),
@@ -1157,6 +1183,10 @@
 			if (!elements.updateCountdown) {
 				return;
 			}
+			if (!state.autoRefreshEnabled) {
+				elements.updateCountdown.textContent = "Auto refresh disabled";
+				return;
+			}
 			if (!state.nextBackgroundUpdateAt) {
 				elements.updateCountdown.textContent = "Next refresh in --s";
 				return;
@@ -1166,6 +1196,11 @@
 		}
 
 		function restartBackgroundCountdown() {
+			if (!state.autoRefreshEnabled) {
+				state.nextBackgroundUpdateAt = 0;
+				updateBackgroundCountdownLine();
+				return;
+			}
 			state.nextBackgroundUpdateAt = Date.now() + 60000;
 			updateBackgroundCountdownLine();
 		}
@@ -1260,6 +1295,56 @@
 			elements.heroTitle.textContent = repoLabel;
 			elements.aptRepoLink.href = state.repo.pagesUrl;
 			elements.githubRepoLink.href = state.repo.webBase;
+		}
+
+		function getSnapshotCacheKey() {
+			if (!state.repo) {
+				return "";
+			}
+			return `ppa-github-autoindex:${state.repo.owner}/${state.repo.repo}:${state.repo.pagesBranch}`;
+		}
+
+		function saveSnapshotToCache(snapshot) {
+			const cacheKey = getSnapshotCacheKey();
+			if (!cacheKey) {
+				return;
+			}
+			try {
+				localStorage.setItem(cacheKey, JSON.stringify({
+					savedAt: new Date().toISOString(),
+					releaseText: snapshot.releaseText,
+					sourcesText: snapshot.sourcesText || "",
+					packagesText: snapshot.packagesText
+				}));
+			} catch (error) {
+				console.warn("Snapshot cache write failed.", error);
+			}
+		}
+
+		function loadSnapshotFromCache() {
+			const cacheKey = getSnapshotCacheKey();
+			if (!cacheKey) {
+				return null;
+			}
+			try {
+				const rawValue = localStorage.getItem(cacheKey);
+				if (!rawValue) {
+					return null;
+				}
+				const snapshot = JSON.parse(rawValue);
+				if (!snapshot || typeof snapshot.releaseText !== "string" || typeof snapshot.packagesText !== "string") {
+					return null;
+				}
+				return {
+					savedAt: snapshot.savedAt || "",
+					releaseText: snapshot.releaseText,
+					sourcesText: snapshot.sourcesText || "",
+					packagesText: snapshot.packagesText
+				};
+			} catch (error) {
+				console.warn("Snapshot cache read failed.", error);
+				return null;
+			}
 		}
 
 		function parseDeb822(text) {
@@ -1359,14 +1444,12 @@
 				.join(" ");
 		}
 
-		function parseBuildDate(version) {
-			const match = String(version).match(/\.(\d{8})\.(\d{6})~/);
-			if (!match) {
+		function parseBuildDate(value) {
+			const rawValue = String(value || "").trim();
+			if (!rawValue) {
 				return null;
 			}
-			const [, day, time] = match;
-			const iso = `${day.slice(0, 4)}-${day.slice(4, 6)}-${day.slice(6, 8)}T${time.slice(0, 2)}:${time.slice(2, 4)}:${time.slice(4, 6)}Z`;
-			const date = new Date(iso);
+			const date = new Date(rawValue);
 			return Number.isNaN(date.valueOf()) ? null : date.toISOString();
 		}
 
@@ -1503,6 +1586,7 @@
 			const control = normalizeControl(entry);
 			const parsedSource = parseSourceField(entry.Source, entry.Package || filename || "unknown");
 			const sourceMeta = state.sourceByBinary.get(entry.Package || "") || null;
+			const buildDateRaw = String(entry["Xb-Build-Date"] || "").trim();
 			return {
 				name: entry.Package || filename || "unknown",
 				normalizedName: slugifyPackageName(entry.Package || filename || "unknown"),
@@ -1542,7 +1626,8 @@
 				sourceDebsUrl: snapshot.sourceDebsSha ? `${state.repo.webBase}/commit/${snapshot.sourceDebsSha}` : "",
 				deployedAt: snapshot.date,
 				deployedBy: snapshot.author,
-				buildDate: parseBuildDate(version),
+				buildDateRaw,
+				buildDate: parseBuildDate(buildDateRaw),
 				control,
 				dependencyNames: parseDependencyNames(entry.Depends || ""),
 				provideNames: parseDependencyNames(entry.Provides || ""),
@@ -1551,6 +1636,79 @@
 				historicalDownloadUrl: snapshot.sha === "current"
 					? `./${encodeURI(filename)}`
 					: `${state.repo.rawBase}/${snapshot.sha}/${encodeURI(filename)}`
+			};
+		}
+
+		function applyReleaseText(releaseText) {
+			const parsedRelease = parseRelease(releaseText);
+			if (!Object.keys(parsedRelease || {}).length) {
+				throw new Error("Release metadata could not be parsed from the resolved snapshot.");
+			}
+			state.inRelease = parsedRelease;
+			state.release = parsedRelease;
+			state.releaseRawText = releaseText;
+			state.releaseIndexes = [
+				...parseReleaseIndexEntries(state.release?.SHA256 || "", "SHA256"),
+				...parseReleaseIndexEntries(state.release?.SHA1 || "", "SHA1"),
+				...parseReleaseIndexEntries(state.release?.MD5Sum || "", "MD5")
+			];
+		}
+
+		function applySourcesText(sourcesText) {
+			state.sourcesRawText = sourcesText || "";
+			if (!sourcesText) {
+				state.sources = [];
+				state.sourceByBinary = new Map();
+				return;
+			}
+			state.sources = parseSourceEntries(sourcesText);
+			const sourceByBinary = new Map();
+			for (const source of state.sources) {
+				for (const binary of source.binaries) {
+					if (!sourceByBinary.has(binary)) {
+						sourceByBinary.set(binary, source);
+					}
+				}
+			}
+			state.sourceByBinary = sourceByBinary;
+		}
+
+		function applyPackagesText(packagesText, snapshotMeta) {
+			state.packagesRawText = packagesText;
+			state.currentPackages = parseDeb822(packagesText).map((entry) => normalizePackageEntry(entry, snapshotMeta));
+		}
+
+		function applySnapshotData(snapshot, snapshotAuthor) {
+			applyReleaseText(snapshot.releaseText);
+			applySourcesText(snapshot.sourcesText || "");
+			applyPackagesText(snapshot.packagesText, {
+				sha: "current",
+				htmlUrl: state.repo.branchWeb,
+				sourceDebsSha: "",
+				date: state.release?.Date || snapshot.savedAt || new Date().toISOString(),
+				author: snapshotAuthor
+			});
+			state.lastSnapshotFingerprint = buildSnapshotFingerprint(state.releaseRawText, state.packagesRawText);
+			buildPackageIndex();
+			render();
+		}
+
+		async function fetchRemoteSnapshot() {
+			const [inReleaseText, releaseText, sourcesText, packagesText] = await Promise.all([
+				fetchOptionalText("./InRelease"),
+				fetchOptionalText("./Release"),
+				fetchOptionalText("./Sources"),
+				fetchText("./Packages")
+			]);
+			const normalizedInRelease = stripInlineSignedText(inReleaseText);
+			const resolvedReleaseText = normalizedInRelease.trim() || releaseText;
+			if (!resolvedReleaseText.trim()) {
+				throw new Error("Neither InRelease nor Release could be parsed from the deployed repository.");
+			}
+			return {
+				releaseText: resolvedReleaseText,
+				sourcesText: sourcesText || "",
+				packagesText
 			};
 		}
 
@@ -1975,6 +2133,7 @@
 
 		function renderList() {
 			const packages = getFilteredPackages();
+			const showBuildDateColumn = state.packages.some((pkg) => pkg.currentEntries.some((entry) => entry.buildDateRaw));
 			ensureSelectionConsistency(packages);
 			const selectedPackage = getSelectedPackage();
 			updateVersionFilter(selectedPackage);
@@ -1989,9 +2148,22 @@
 			const rows = packages.map((pkg) => {
 				const latest = pkg.latestEntry;
 				const current = pkg.currentEntries[0] || latest;
+				const buildDateEntry = pkg.currentEntries.find((entry) => entry.buildDateRaw) || null;
 				const isActive = selectedPackage && selectedPackage.name === pkg.name;
 				const latestVersion = latest?.version || "Unknown";
 				const artifactName = current?.filename || "-";
+				const buildDateCell = showBuildDateColumn
+					? `
+						<td>
+							${buildDateEntry?.buildDate
+								? `<div title="${escapeHtml(buildDateEntry.buildDateRaw)}">${escapeHtml(formatDate(buildDateEntry.buildDate))}</div><div class="hint">${escapeHtml(formatRelativeDate(buildDateEntry.buildDate))}</div>`
+								: buildDateEntry?.buildDateRaw
+									? `<div title="${escapeHtml(buildDateEntry.buildDateRaw)}">${escapeHtml(buildDateEntry.buildDateRaw)}</div>`
+									: '<span class="muted">-</span>'
+							}
+						</td>
+					`
+					: "";
 				const homepageIcon = current?.homepage
 					? `<a class="icon-link" href="${escapeHtml(current.homepage)}" target="_blank" rel="noreferrer" title="Open homepage" aria-label="Open homepage">
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5"></path><path d="M10 14 19 5"></path><path d="M19 14v5H5V5h5"></path></svg>
@@ -2009,10 +2181,7 @@
 						<td class="version-cell"><span class="version-text" title="${escapeHtml(latestVersion)}">${escapeHtml(latestVersion)}</span></td>
 						<td class="arch-cell" title="${escapeHtml(pkg.architectures.join(", "))}">${escapeHtml(pkg.architectures.join(", "))}</td>
 						<td class="maintainer-cell" title="${escapeHtml(current?.maintainer || pkg.maintainers[0] || "Unknown")}">${escapeHtml(current?.maintainer || pkg.maintainers[0] || "Unknown")}</td>
-						<td>
-							<div>${escapeHtml(formatDate(pkg.latestDeployedAt))}</div>
-							<div class="hint">${escapeHtml(formatRelativeDate(pkg.latestDeployedAt))}</div>
-						</td>
+						${buildDateCell}
 						<td class="artifact-cell"><span class="artifact-text" title="${escapeHtml(artifactName)}">${escapeHtml(artifactName)}</span></td>
 					</tr>
 				`;
@@ -2025,7 +2194,7 @@
 						<col class="col-version">
 						<col class="col-arch">
 						<col class="col-maintainer">
-						<col class="col-deploy">
+						${showBuildDateColumn ? '<col class="col-build">' : ""}
 						<col class="col-artifact">
 					</colgroup>
 					<thead>
@@ -2034,7 +2203,7 @@
 							<th><button class="table-sort ${state.filters.sort === "versions" ? "is-active" : ""}" data-sort="versions" type="button">Latest Version</button></th>
 							<th>Architectures</th>
 							<th>Maintainer</th>
-							<th><button class="table-sort ${state.filters.sort === "latest" ? "is-active" : ""}" data-sort="latest" type="button">Latest Deploy</button></th>
+							${showBuildDateColumn ? '<th>Build Date</th>' : ""}
 							<th>Artifact</th>
 						</tr>
 					</thead>
@@ -2139,7 +2308,7 @@
 					<div class="detail-card"><strong>File</strong><div>${escapeHtml(current.filename || "-")}</div></div>
 					<div class="detail-card"><strong>Package size</strong><div>${escapeHtml(formatBytes(current.size))}</div></div>
 					<div class="detail-card"><strong>Installed size</strong><div>${escapeHtml(current.installedSize ? `${current.installedSize} KB` : "-")}</div></div>
-					<div class="detail-card"><strong>Build stamp</strong><div>${escapeHtml(current.buildDate ? formatDate(current.buildDate) : "Unavailable")}</div></div>
+					<div class="detail-card"><strong>Build date</strong><div>${escapeHtml(current.buildDate ? formatDate(current.buildDate) : (current.buildDateRaw || "Unavailable"))}</div></div>
 					<div class="detail-card"><strong>Section</strong><div>${escapeHtml(current.section || "-")}</div></div>
 					<div class="detail-card"><strong>Priority</strong><div>${escapeHtml(current.priority || "-")}</div></div>
 				</div>
@@ -2304,6 +2473,10 @@
 				initialize(false);
 			});
 
+			elements.autoRefreshToggle.addEventListener("change", (event) => {
+				setAutoRefreshEnabled(event.target.checked);
+			});
+
 			elements.detailBack.addEventListener("click", () => {
 				state.selectedName = "";
 				state.selectedVersion = "latest";
@@ -2332,6 +2505,9 @@
 		}
 
 		async function checkForBackgroundUpdates() {
+			if (!state.autoRefreshEnabled) {
+				return;
+			}
 			if (state.backgroundUpdateInFlight) {
 				return;
 			}
@@ -2359,7 +2535,36 @@
 			}
 		}
 
+		function clearBackgroundUpdates() {
+			if (state.backgroundCountdownTimerId) {
+				window.clearInterval(state.backgroundCountdownTimerId);
+				state.backgroundCountdownTimerId = null;
+			}
+			if (state.backgroundUpdateTimerId) {
+				window.clearInterval(state.backgroundUpdateTimerId);
+				state.backgroundUpdateTimerId = null;
+			}
+			state.nextBackgroundUpdateAt = 0;
+		}
+
+		function setAutoRefreshEnabled(enabled) {
+			state.autoRefreshEnabled = Boolean(enabled);
+			elements.autoRefreshToggle.checked = state.autoRefreshEnabled;
+			if (!state.autoRefreshEnabled) {
+				clearBackgroundUpdates();
+				updateBackgroundCountdownLine();
+				return;
+			}
+			restartBackgroundCountdown();
+			ensureBackgroundUpdates();
+		}
+
 		function ensureBackgroundUpdates() {
+			if (!state.autoRefreshEnabled) {
+				clearBackgroundUpdates();
+				updateBackgroundCountdownLine();
+				return;
+			}
 			if (!state.backgroundCountdownTimerId) {
 				state.backgroundCountdownTimerId = window.setInterval(() => {
 					updateBackgroundCountdownLine();
@@ -2377,26 +2582,17 @@
 
 		async function initialize(isInitialLoad = true, options = {}) {
 			const silent = Boolean(options.silent);
+			const hadPackages = state.packages.length > 0;
 			if (!silent) {
 				elements.refresh.disabled = true;
 				setStatus("Resolving repository from the current URL…");
-				elements.listRoot.innerHTML = '<div class="status">Loading remote repository state…</div>';
-				elements.detailRoot.innerHTML = '<div class="status">Loading current APT snapshot…</div>';
+				if (!hadPackages) {
+					elements.listRoot.innerHTML = '<div class="status">Loading remote repository state…</div>';
+					elements.detailRoot.innerHTML = '<div class="status">Loading current APT snapshot…</div>';
+				}
 			}
 
 			try {
-				state.repo = null;
-				state.release = null;
-				state.inRelease = null;
-				state.releaseIndexes = [];
-				state.releaseRawText = "";
-				state.packagesRawText = "";
-				state.lastSnapshotFingerprint = "";
-				state.sources = [];
-				state.sourceByBinary = new Map();
-				state.currentPackages = [];
-				state.packages = [];
-				state.selectedBuildArchitecture = "";
 				if (!silent) {
 					state.nextBackgroundUpdateAt = 0;
 					updateBackgroundCountdownLine();
@@ -2406,18 +2602,34 @@
 				renderRepoContext();
 				applyUrlState();
 				setStatus(`Fetching Release and current Packages for ${state.repo.owner}/${state.repo.repo}…`);
-				await loadRelease();
-				await loadSources();
-				await loadCurrentPackages();
-				state.lastSnapshotFingerprint = buildSnapshotFingerprint(state.releaseRawText, state.packagesRawText);
 
-				buildPackageIndex();
-				render();
+				let usedCache = false;
+				let cachedSnapshot = null;
+				try {
+					const remoteSnapshot = await fetchRemoteSnapshot();
+					applySnapshotData(remoteSnapshot, "Current snapshot");
+					saveSnapshotToCache(remoteSnapshot);
+				} catch (error) {
+					const shouldUseCacheFallback = isInitialLoad || !hadPackages;
+					if (!shouldUseCacheFallback) {
+						throw error;
+					}
+					cachedSnapshot = loadSnapshotFromCache();
+					if (!cachedSnapshot) {
+						throw error;
+					}
+					applySnapshotData(cachedSnapshot, "Cached snapshot");
+					usedCache = true;
+				}
 				restartBackgroundCountdown();
 
 				const pkg = getSelectedPackage();
 				if (!silent) {
-					setStatus(`Loaded ${state.packages.length} packages from current APT metadata (${state.sources.length} source entries, ${state.releaseIndexes.length} release index checks parsed).${pkg ? ` Showing ${pkg.name}.` : ""}`);
+					setStatus(
+						usedCache
+							? `Remote update failed. Using cached snapshot${cachedSnapshot?.savedAt ? ` from ${formatDate(cachedSnapshot.savedAt)}` : ""}. Loaded ${state.packages.length} packages.${pkg ? ` Showing ${pkg.name}.` : ""}`
+							: `Loaded ${state.packages.length} packages from current APT metadata (${state.sources.length} source entries, ${state.releaseIndexes.length} release index checks parsed).${pkg ? ` Showing ${pkg.name}.` : ""}`
+					);
 				} else {
 					setStatus(`Background update applied. Loaded ${state.packages.length} packages.${pkg ? ` Showing ${pkg.name}.` : ""}`);
 				}
@@ -2429,11 +2641,11 @@
 				}
 			} catch (error) {
 				console.error(error);
-				if (!silent) {
+				if (!silent && !state.packages.length) {
 					elements.listRoot.innerHTML = '<div class="warning">Failed to load package metadata from the remote repository.</div>';
 					elements.detailRoot.innerHTML = `<div class="warning">${escapeHtml(error.message || String(error))}</div>`;
 				}
-				setStatus("Loading failed.");
+				setStatus(state.packages.length ? "Refresh failed. Keeping previously loaded data." : "Loading failed.");
 			} finally {
 				if (!silent) {
 					elements.refresh.disabled = false;
