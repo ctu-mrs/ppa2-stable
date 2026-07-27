@@ -14,13 +14,8 @@ if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
 fi
 
 ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
-
-curl -s --compressed --retry 4 --retry-max-time 60 --retry-all-errors "https://ctu-mrs.github.io/ppa2-stable/ctu-mrs.gpg" | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/ctu-mrs.gpg > /dev/null
-sudo curl -s --compressed --retry 4 --retry-max-time 60 --retry-all-errors -o /etc/apt/sources.list.d/ctu-mrs-stable.list "https://ctu-mrs.github.io/ppa2-stable/ctu-mrs-apt.list"
-sudo curl -s --compressed --retry 4 --retry-max-time 60 --retry-all-errors -o /etc/apt/preferences.d/ctu-mrs-stable-preferences "https://ctu-mrs.github.io/ppa2-stable/ctu-mrs-ppa-preferences.txt"
 sudo curl -s --compressed --retry 4 --retry-max-time 60 --retry-all-errors -o /etc/ros/rosdep/sources.list.d/ctu-mrs-stable.list "https://ctu-mrs.github.io/ppa2-stable/ctu-mrs-$ARCH.list"
-sudo apt-get update -o Acquire::Retries="4"
-
+curl -s --compressed --retry 4 --retry-max-time 60 --retry-all-errors https://ctu-mrs.github.io/ppa2-stable/add_sources_ppa.sh | bash
 rosdep update
 
 echo "$0: Finished adding MRS ROS2 Stable PPA repository"
