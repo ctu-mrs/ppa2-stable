@@ -84,7 +84,7 @@
 		}
 
 		.workspace-shell {
-			width: calc(100vw - 12px);
+			width: min(calc(100vw - 12px), 1800px);
 			margin: 16px auto 0;
 		}
 
@@ -296,7 +296,7 @@
 
 		.toolbar-fields {
 			display: grid;
-			grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(160px, 1fr)) auto auto;
+			grid-template-columns: minmax(220px, 2fr) repeat(2, minmax(160px, 1fr)) auto;
 			gap: 12px;
 			align-items: center;
 		}
@@ -349,14 +349,20 @@
 			align-items: center;
 		}
 
-		.detail-arch-picker {
+		.detail-build-pickers {
 			display: grid;
-			gap: 6px;
-			margin-top: 10px;
-			max-width: 340px;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 10px;
+			grid-column: 1 / -1;
 		}
 
-		.detail-arch-picker label {
+		.detail-build-picker {
+			display: grid;
+			gap: 6px;
+			min-width: 0;
+		}
+
+		.detail-build-picker label {
 			font-size: 0.74rem;
 			text-transform: uppercase;
 			letter-spacing: 0.08em;
@@ -438,16 +444,15 @@
 
 		.layout {
 			display: grid;
-			grid-template-columns: minmax(0, 1fr) 0fr;
-			gap: 14px;
+			grid-template-columns: minmax(0, 1fr) minmax(0, 0fr);
+			gap: 0;
 			align-items: start;
-			justify-content: center;
-			transition: grid-template-columns 220ms ease, gap 220ms ease;
+			transition: grid-template-columns 300ms cubic-bezier(0.22, 1, 0.36, 1), gap 300ms cubic-bezier(0.22, 1, 0.36, 1);
 		}
 
 		.layout.has-selection {
-			grid-template-columns: minmax(0, 1.9fr) minmax(320px, 0.85fr);
-			justify-content: stretch;
+			grid-template-columns: minmax(0, 1fr) minmax(0, 0.447fr);
+			gap: 14px;
 		}
 
 		.list-panel,
@@ -456,14 +461,7 @@
 		}
 
 		.list-panel {
-			width: min(100%, 1800px);
-			justify-self: center;
-			transition: width 220ms ease, justify-self 220ms ease;
-		}
-
-		.layout.has-selection .list-panel {
 			width: 100%;
-			justify-self: stretch;
 		}
 
 		.list-panel {
@@ -486,20 +484,30 @@
 			align-self: start;
 			opacity: 1;
 			transform: translateX(0);
-			transform-origin: right center;
-			transition: opacity 180ms ease, transform 220ms ease, visibility 220ms ease;
+			visibility: visible;
+			transition: opacity 180ms ease 70ms, transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
 		}
 
 		.detail-panel.is-hidden {
 			opacity: 0;
-			transform: translateX(28px);
+			transform: translateX(18px);
 			visibility: hidden;
 			pointer-events: none;
+			transition: opacity 140ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 300ms;
 		}
 
 		.detail-panel .panel-body {
 			overflow: auto;
 			min-height: 0;
+		}
+
+		.detail-panel .panel-head {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) auto;
+		}
+
+		.detail-panel .view-tabs {
+			max-width: 130px;
 		}
 
 		.detail-panel.panel,
@@ -571,34 +579,44 @@
 			min-width: 900px;
 		}
 
-		.col-package { width: 29%; }
-		.col-version { width: 20%; }
-		.col-arch { width: 13%; }
-		.col-maintainer { width: 16%; }
-		.col-build { width: 12%; }
-		.col-artifact { width: 10%; }
+		.col-package { width: 27%; }
+		.col-version { width: 34%; }
+		.col-maintainer { width: 15%; }
+		.col-build { width: 13%; }
+		.col-artifact { width: 11%; }
 
-		.version-cell {
-			max-width: 240px;
+		.version-summary {
+			display: grid;
+			gap: 2px;
+			min-width: 0;
+			width: 100%;
 		}
 
-		.version-text {
-			display: block;
+		.version-summary-line {
+			display: flex;
+			gap: 5px;
+			min-width: 0;
+			line-height: 1.35;
+		}
+
+		.version-summary-line strong {
+			font-weight: 700;
+			min-width: 0;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			font-weight: 700;
 		}
 
-		.arch-cell,
-		.maintainer-cell,
-		.artifact-cell {
-			overflow: hidden;
-			text-overflow: ellipsis;
+		.version-summary-arch {
+			color: var(--muted);
+			font-size: 0.84rem;
+			flex: 0 0 auto;
 		}
 
+		.maintainer-text,
 		.artifact-text {
 			display: block;
+			min-width: 0;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -653,6 +671,10 @@
 			font-weight: 800;
 			letter-spacing: -0.02em;
 			margin-bottom: 4px;
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 
 		.table-name-row {
@@ -706,7 +728,9 @@
 		}
 
 		.table-description {
-			max-width: 420px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 
 		.detail-hero {
@@ -758,6 +782,16 @@
 			text-transform: uppercase;
 			letter-spacing: 0.08em;
 			color: var(--muted);
+		}
+
+		.detail-hero .tag {
+			max-width: 100%;
+			overflow-wrap: anywhere;
+		}
+
+		.detail-card div,
+		.control-value {
+			overflow-wrap: anywhere;
 		}
 
 		.description,
@@ -830,10 +864,6 @@
 		}
 
 		@media (max-width: 1360px) {
-			.layout.has-selection {
-				grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.82fr);
-			}
-
 			.toolbar-fields {
 				grid-template-columns: repeat(3, minmax(0, 1fr));
 			}
@@ -852,13 +882,23 @@
 			.layout,
 			.layout.has-selection {
 				grid-template-columns: 1fr;
-				justify-content: stretch;
+				gap: 0;
 			}
 
-			.list-panel,
-			.layout.has-selection .list-panel {
+			.list-panel {
 				width: 100%;
-				justify-self: stretch;
+			}
+
+			.detail-panel.is-hidden {
+				display: none;
+			}
+
+			.detail-panel .panel-head {
+				grid-template-columns: 1fr;
+			}
+
+			.detail-panel .view-tabs {
+				max-width: none;
 			}
 
 			.list-panel,
@@ -885,6 +925,7 @@
 				width: 100vw;
 				height: 100vh;
 				border-radius: 0;
+				background: var(--panel-strong);
 			}
 
 			body.mobile-detail-open .detail-panel .panel-head {
@@ -947,8 +988,8 @@
 				grid-template-columns: 1fr;
 			}
 
-			.version-cell {
-				max-width: 170px;
+			.detail-build-pickers {
+				grid-template-columns: 1fr;
 			}
 
 			.view-tabs {
@@ -1003,6 +1044,14 @@
 				min-width: 720px;
 			}
 		}
+
+		@media (prefers-reduced-motion: reduce) {
+			.layout,
+			.detail-panel,
+			.detail-panel.is-hidden {
+				transition: none;
+			}
+		}
 	</style>
 </head>
 <body>
@@ -1043,9 +1092,6 @@
 							<option value="versions">Sort by version count</option>
 							<option value="history">Sort by deployment count</option>
 						</select>
-						<select id="version-filter" class="select">
-							<option value="latest">Selected package: newest version</option>
-						</select>
 						<button id="refresh" class="button" type="button">Refresh</button>
 					</div>
 				</div>
@@ -1085,16 +1131,24 @@
 						<button type="button" class="mobile-back" id="detail-back">Close</button>
 						<h3>Package Detail</h3>
 						<div class="hint" id="detail-caption">Select a package or open ?pkg=name to see newest details</div>
-						<div class="detail-arch-picker">
+					</div>
+					<div class="view-tabs">
+						<button type="button" class="tab-button is-active" data-tab="overview">Overview</button>
+						<button type="button" class="tab-button" data-tab="control">Control</button>
+					</div>
+					<div class="detail-build-pickers">
+						<div class="detail-build-picker">
 							<label for="detail-arch-filter">Build architecture</label>
 							<select id="detail-arch-filter" class="select detail-arch-filter">
 								<option value="" disabled>No architecture available</option>
 							</select>
 						</div>
-					</div>
-					<div class="view-tabs">
-						<button type="button" class="tab-button is-active" data-tab="overview">Overview</button>
-						<button type="button" class="tab-button" data-tab="control">Control</button>
+						<div class="detail-build-picker">
+							<label for="version-filter">Version</label>
+							<select id="version-filter" class="select detail-arch-filter">
+								<option value="latest">Newest</option>
+							</select>
+						</div>
 					</div>
 				</div>
 				<div class="panel-body" id="detail-root">
@@ -1453,6 +1507,64 @@
 			return Number.isNaN(date.valueOf()) ? null : date.toISOString();
 		}
 
+		// Debian Policy 5.6.12: compare epoch, upstream version, then revision.
+		function compareDigitStrings(left, right) {
+			const a = left.replace(/^0+/, "");
+			const b = right.replace(/^0+/, "");
+			return a.length - b.length || (a < b ? -1 : a > b ? 1 : 0);
+		}
+
+		function debianCharacterOrder(character) {
+			if (character === "~") return -1;
+			if (!character || /[0-9]/.test(character)) return 0;
+			if (/[A-Za-z]/.test(character)) return character.charCodeAt(0);
+			return character.charCodeAt(0) + 256;
+		}
+
+		function compareDebianVersionPart(left, right) {
+			let a = 0;
+			let b = 0;
+			while (a < left.length || b < right.length) {
+				while ((a < left.length && !/[0-9]/.test(left[a])) || (b < right.length && !/[0-9]/.test(right[b]))) {
+					const difference = debianCharacterOrder(left[a]) - debianCharacterOrder(right[b]);
+					if (difference) return difference;
+					if (a < left.length && !/[0-9]/.test(left[a])) a += 1;
+					if (b < right.length && !/[0-9]/.test(right[b])) b += 1;
+				}
+				const aStart = a;
+				const bStart = b;
+				while (a < left.length && /[0-9]/.test(left[a])) a += 1;
+				while (b < right.length && /[0-9]/.test(right[b])) b += 1;
+				const difference = compareDigitStrings(left.slice(aStart, a), right.slice(bStart, b));
+				if (difference) return difference;
+			}
+			return 0;
+		}
+
+		function splitDebianVersion(version) {
+			let value = String(version || "");
+			let epoch = "0";
+			const epochMatch = value.match(/^(\d+):/);
+			if (epochMatch) {
+				epoch = epochMatch[1];
+				value = value.slice(epochMatch[0].length);
+			}
+			const revisionSeparator = value.lastIndexOf("-");
+			return {
+				epoch,
+				upstream: revisionSeparator < 0 ? value : value.slice(0, revisionSeparator),
+				revision: revisionSeparator < 0 ? "0" : value.slice(revisionSeparator + 1)
+			};
+		}
+
+		function compareDebianVersions(left, right) {
+			const a = splitDebianVersion(left);
+			const b = splitDebianVersion(right);
+			return compareDigitStrings(a.epoch, b.epoch)
+				|| compareDebianVersionPart(a.upstream, b.upstream)
+				|| compareDebianVersionPart(a.revision, b.revision);
+		}
+
 		function formatDate(value, withTime = true) {
 			if (!value) {
 				return "Unknown";
@@ -1792,7 +1904,6 @@
 						suggests: new Set(),
 						provides: new Set(),
 						latestDeployedAt: "",
-						latestEntry: null,
 						firstSeenAt: "",
 						deployments: []
 					};
@@ -1839,7 +1950,6 @@
 
 					if (!current.latestDeployedAt || new Date(pkg.deployedAt) > new Date(current.latestDeployedAt)) {
 						current.latestDeployedAt = pkg.deployedAt;
-						current.latestEntry = pkg;
 					}
 
 					if (!current.firstSeenAt || new Date(pkg.deployedAt) < new Date(current.firstSeenAt)) {
@@ -1858,15 +1968,25 @@
 						architectures: Array.from(entry.architectures).sort(),
 						dependencies: Array.from(entry.dependencies).sort(),
 						control: entry.control,
-						entries: entry.entries.sort((left, right) => new Date(right.deployedAt) - new Date(left.deployedAt))
+						entries: entry.entries.sort((left, right) => new Date(right.buildDate || right.deployedAt) - new Date(left.buildDate || left.deployedAt))
 					}))
-					.sort((left, right) => new Date(right.entries[0].deployedAt) - new Date(left.entries[0].deployedAt));
+					.sort((left, right) => compareDebianVersions(right.version, left.version));
 
-				const currentEntries = state.currentPackages.filter((entry) => entry.name === pkg.name);
+				const currentEntries = pkg.deployments;
+				const latestByArchitecture = new Map();
+				for (const entry of currentEntries) {
+					const previous = latestByArchitecture.get(entry.architecture);
+					const comparison = previous ? compareDebianVersions(entry.version, previous.version) : 1;
+					if (comparison > 0 || (comparison === 0 && new Date(entry.buildDate || entry.deployedAt) > new Date(previous.buildDate || previous.deployedAt))) {
+						latestByArchitecture.set(entry.architecture, entry);
+					}
+				}
+				const newestEntries = Array.from(latestByArchitecture.values()).sort((left, right) => left.architecture.localeCompare(right.architecture));
 				return {
 					name: pkg.name,
 					normalizedName: pkg.normalizedName,
-					latestEntry: pkg.latestEntry,
+					latestEntry: versions[0]?.entries[0] || null,
+					newestEntries,
 					latestDeployedAt: pkg.latestDeployedAt,
 					firstSeenAt: pkg.firstSeenAt,
 					maintainers: Array.from(pkg.maintainers),
@@ -1920,39 +2040,21 @@
 			if (!pkg) {
 				return null;
 			}
+			const availableVersions = state.selectedBuildArchitecture
+				? pkg.versions.filter((entry) => entry.architectures.includes(state.selectedBuildArchitecture))
+				: pkg.versions;
 			if (!state.selectedVersion || state.selectedVersion === "latest") {
-				return pkg.versions[0] || null;
+				return availableVersions[0] || null;
 			}
-			return pkg.versions.find((entry) => entry.version === state.selectedVersion) || pkg.versions[0] || null;
+			return availableVersions.find((entry) => entry.version === state.selectedVersion) || availableVersions[0] || null;
 		}
 
 		function getSelectedBuildEntry(pkg, preferredVersionEntry) {
-			if (!pkg || !Array.isArray(pkg.currentEntries) || pkg.currentEntries.length === 0) {
+			if (!pkg || !preferredVersionEntry) {
 				return null;
 			}
-
-			const sortedEntries = [...pkg.currentEntries].sort((left, right) => new Date(right.deployedAt) - new Date(left.deployedAt));
-			let filtered = sortedEntries;
-
-			if (state.selectedBuildArchitecture) {
-				filtered = sortedEntries.filter((entry) => entry.architecture === state.selectedBuildArchitecture);
-			}
-
-			if (!filtered.length) {
-				state.selectedBuildArchitecture = sortedEntries[0]?.architecture || "";
-				filtered = state.selectedBuildArchitecture
-					? sortedEntries.filter((entry) => entry.architecture === state.selectedBuildArchitecture)
-					: sortedEntries;
-			}
-
-			if (preferredVersionEntry) {
-				const sameVersion = filtered.filter((entry) => entry.version === preferredVersionEntry.version);
-				if (sameVersion.length) {
-					return sameVersion[0];
-				}
-			}
-
-			return filtered[0] || null;
+			return preferredVersionEntry.entries.find((entry) => entry.architecture === state.selectedBuildArchitecture)
+				|| preferredVersionEntry.entries[0] || null;
 		}
 
 		function getFilteredPackages() {
@@ -2042,12 +2144,17 @@
 
 		function applyUrlState() {
 			const params = new URLSearchParams(location.search);
+			const previousName = state.selectedName;
+			const previousVersion = state.selectedVersion;
 			state.urlSyncSuspended = true;
 			state.filters.query = params.get("q") || "";
 			state.filters.architecture = params.get("arch") || "all";
 			state.filters.sort = params.get("sort") || "latest";
 			state.selectedName = params.get("pkg") || "";
 			state.selectedVersion = params.get("version") || "latest";
+			if (state.selectedName !== previousName || state.selectedVersion !== previousVersion) {
+				state.selectedBuildArchitecture = "";
+			}
 			state.activeTab = params.get("tab") || "overview";
 			elements.search.value = state.filters.query;
 			elements.archFilter.value = state.filters.architecture;
@@ -2083,32 +2190,34 @@
 
 		function updateVersionFilter(pkg) {
 			if (!pkg) {
-				elements.versionFilter.innerHTML = '<option value="latest">Selected package: newest version</option>';
+				elements.versionFilter.innerHTML = '<option value="latest">Newest</option>';
 				elements.versionFilter.value = "latest";
 				return;
 			}
+			const availableVersions = pkg.versions.filter((entry) => entry.architectures.includes(state.selectedBuildArchitecture));
 			elements.versionFilter.innerHTML = [
-				'<option value="latest">Selected package: newest version</option>',
-				...pkg.versions.map((entry) => `<option value="${escapeHtml(entry.version)}">${escapeHtml(entry.version)}</option>`)
+				'<option value="latest">Newest</option>',
+				...availableVersions.map((entry) => `<option value="${escapeHtml(entry.version)}">${escapeHtml(entry.version)}</option>`)
 			].join("");
 			elements.versionFilter.value = state.selectedVersion === "latest" ? "latest" : state.selectedVersion;
 		}
 
 		function updateBuildArchitectureFilter(pkg) {
-			if (!pkg || !Array.isArray(pkg.currentEntries) || pkg.currentEntries.length === 0) {
+			if (!pkg || !pkg.currentEntries.length) {
 				elements.detailArchFilter.innerHTML = '<option value="" disabled>No architecture available</option>';
 				elements.detailArchFilter.value = "";
 				state.selectedBuildArchitecture = "";
 				return;
 			}
 
-			const architectures = Array.from(new Set(pkg.currentEntries.map((entry) => entry.architecture))).sort((left, right) => left.localeCompare(right));
+			const architectures = pkg.architectures;
 			elements.detailArchFilter.innerHTML = architectures
-				.map((architecture) => `<option value="${escapeHtml(architecture)}">Build: ${escapeHtml(architecture)}</option>`)
+				.map((architecture) => `<option value="${escapeHtml(architecture)}">${escapeHtml(architecture)}</option>`)
 				.join("");
 
 			if (!state.selectedBuildArchitecture || !architectures.includes(state.selectedBuildArchitecture)) {
-				state.selectedBuildArchitecture = architectures[0] || "";
+				const requestedVersion = pkg.versions.find((entry) => entry.version === state.selectedVersion) || pkg.versions[0];
+				state.selectedBuildArchitecture = requestedVersion?.architectures[0] || architectures[0] || "";
 			}
 			elements.detailArchFilter.value = state.selectedBuildArchitecture;
 		}
@@ -2131,12 +2240,24 @@
 			elements.stateSummary.innerHTML = pills.join("");
 		}
 
+		function renderNewestVersions(pkg) {
+			const groups = new Map();
+			for (const entry of pkg.newestEntries) {
+				const architectures = groups.get(entry.version) || [];
+				architectures.push(entry.architecture);
+				groups.set(entry.version, architectures);
+			}
+			return `<div class="version-summary">${Array.from(groups.entries())
+				.sort(([left], [right]) => compareDebianVersions(right, left))
+				.map(([version, architectures]) => `<div class="version-summary-line" title="${escapeHtml(`${version} (${architectures.join(", ")})`)}"><strong>${escapeHtml(version)}</strong><span class="version-summary-arch">(${escapeHtml(architectures.join(", "))})</span></div>`)
+				.join("")}</div>`;
+		}
+
 		function renderList() {
 			const packages = getFilteredPackages();
 			const showBuildDateColumn = state.packages.some((pkg) => pkg.currentEntries.some((entry) => entry.buildDateRaw));
 			ensureSelectionConsistency(packages);
 			const selectedPackage = getSelectedPackage();
-			updateVersionFilter(selectedPackage);
 			renderStateSummary(packages);
 			elements.packageCount.textContent = `${packages.length} shown out of ${state.packages.length}`;
 
@@ -2147,11 +2268,12 @@
 
 			const rows = packages.map((pkg) => {
 				const latest = pkg.latestEntry;
-				const current = pkg.currentEntries[0] || latest;
-				const buildDateEntry = pkg.currentEntries.find((entry) => entry.buildDateRaw) || null;
+				const current = latest;
+				const buildDateEntry = pkg.newestEntries.find((entry) => entry.buildDateRaw) || null;
 				const isActive = selectedPackage && selectedPackage.name === pkg.name;
-				const latestVersion = latest?.version || "Unknown";
 				const artifactName = current?.filename || "-";
+				const description = latest?.description || pkg.descriptions[0] || "No description";
+				const maintainer = current?.maintainer || pkg.maintainers[0] || "Unknown";
 				const buildDateCell = showBuildDateColumn
 					? `
 						<td>
@@ -2173,14 +2295,13 @@
 					<tr class="${isActive ? "is-active" : ""}" data-package-row="${escapeHtml(pkg.name)}" aria-selected="${isActive ? "true" : "false"}">
 						<td>
 							<div class="table-name-row">
-								<div class="table-name">${escapeHtml(pkg.name)}</div>
+								<div class="table-name" title="${escapeHtml(pkg.name)}">${escapeHtml(pkg.name)}</div>
 								${homepageIcon}
 							</div>
-							<div class="table-description">${escapeHtml(latest?.description || pkg.descriptions[0] || "No description")}</div>
+							<div class="table-description" title="${escapeHtml(description)}">${escapeHtml(description)}</div>
 						</td>
-						<td class="version-cell"><span class="version-text" title="${escapeHtml(latestVersion)}">${escapeHtml(latestVersion)}</span></td>
-						<td class="arch-cell" title="${escapeHtml(pkg.architectures.join(", "))}">${escapeHtml(pkg.architectures.join(", "))}</td>
-						<td class="maintainer-cell" title="${escapeHtml(current?.maintainer || pkg.maintainers[0] || "Unknown")}">${escapeHtml(current?.maintainer || pkg.maintainers[0] || "Unknown")}</td>
+						<td class="version-cell">${renderNewestVersions(pkg)}</td>
+						<td class="maintainer-cell"><span class="maintainer-text" title="${escapeHtml(maintainer)}">${escapeHtml(maintainer)}</span></td>
 						${buildDateCell}
 						<td class="artifact-cell"><span class="artifact-text" title="${escapeHtml(artifactName)}">${escapeHtml(artifactName)}</span></td>
 					</tr>
@@ -2192,7 +2313,6 @@
 					<colgroup>
 						<col class="col-package">
 						<col class="col-version">
-						<col class="col-arch">
 						<col class="col-maintainer">
 						${showBuildDateColumn ? '<col class="col-build">' : ""}
 						<col class="col-artifact">
@@ -2200,8 +2320,7 @@
 					<thead>
 						<tr>
 							<th><button class="table-sort ${state.filters.sort === "name" ? "is-active" : ""}" data-sort="name" type="button">Package</button></th>
-							<th><button class="table-sort ${state.filters.sort === "versions" ? "is-active" : ""}" data-sort="versions" type="button">Latest Version</button></th>
-							<th>Architectures</th>
+							<th><button class="table-sort ${state.filters.sort === "versions" ? "is-active" : ""}" data-sort="versions" type="button">Newest by Architecture</button></th>
 							<th>Maintainer</th>
 							${showBuildDateColumn ? '<th>Build Date</th>' : ""}
 							<th>Artifact</th>
@@ -2251,8 +2370,8 @@
 		}
 
 		function renderOverviewTab(pkg, versionEntry, current) {
-			const dependencyLinks = versionEntry.dependencies.length
-				? versionEntry.dependencies.map((dependencyName) => {
+			const dependencyLinks = current.dependencyNames.length
+				? current.dependencyNames.map((dependencyName) => {
 					const dependencyPackage = findPackageByName(dependencyName);
 					if (!dependencyPackage) {
 						return `<span class="dep-pill">${escapeHtml(dependencyName)}</span>`;
@@ -2369,6 +2488,8 @@
 			const pkg = getSelectedPackage();
 			const isMobile = window.matchMedia("(max-width: 900px)").matches;
 			if (!pkg) {
+				updateVersionFilter(null);
+				updateBuildArchitectureFilter(null);
 				elements.layout.classList.remove("has-selection");
 				elements.detailPanel.classList.add("is-hidden");
 				elements.detailPanel.setAttribute("aria-hidden", "true");
@@ -2383,10 +2504,14 @@
 			elements.detailPanel.setAttribute("aria-hidden", "false");
 			document.body.classList.toggle("mobile-detail-open", isMobile);
 
-			const preferredVersionEntry = getSelectedVersionEntry(pkg);
 			updateBuildArchitectureFilter(pkg);
+			const preferredVersionEntry = getSelectedVersionEntry(pkg);
+			if (state.selectedVersion !== "latest" && preferredVersionEntry?.version !== state.selectedVersion) {
+				state.selectedVersion = "latest";
+			}
+			updateVersionFilter(pkg);
 			const current = getSelectedBuildEntry(pkg, preferredVersionEntry) || pkg.latestEntry;
-			const versionEntry = pkg.versions.find((entry) => entry.version === current?.version) || preferredVersionEntry;
+			const versionEntry = preferredVersionEntry;
 			if (!versionEntry || !current) {
 				elements.detailRoot.innerHTML = '<div class="warning">Selected package has no resolved entries.</div>';
 				return;
@@ -2459,13 +2584,17 @@
 
 			elements.versionFilter.addEventListener("change", (event) => {
 				state.selectedVersion = event.target.value || "latest";
-				state.selectedBuildArchitecture = "";
 				updateUrlState();
 				render();
 			});
 
 			elements.detailArchFilter.addEventListener("change", (event) => {
 				state.selectedBuildArchitecture = event.target.value || "";
+				const pkg = getSelectedPackage();
+				if (state.selectedVersion !== "latest" && !pkg?.versions.some((entry) => entry.version === state.selectedVersion && entry.architectures.includes(state.selectedBuildArchitecture))) {
+					state.selectedVersion = "latest";
+					updateUrlState();
+				}
 				render();
 			});
 
