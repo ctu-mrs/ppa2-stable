@@ -1,4 +1,4 @@
-# PPA2 Stable
+# PPA2 Stable · [Index](https://ctu-mrs.github.io/ppa2-stable/)
 
 Personal Package Archive (PPA) for stable ROS2 MRS deb packages.
 
