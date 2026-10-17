@@ -1,0 +1,39 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Date: Sat, 17 Oct 2026 18:48:06 +0000
+Label: stable
+Origin: ctu-mrs
+MD5Sum:
+ 5d9404e32b09b4f3f846e67fbd0ef813           230212 Packages
+ a08d4f613b049049c40d15752bd810a3            41655 Packages.gz
+ 9bf9276c342a6ce0d0e45570ec8f7ffd               68 Release
+SHA1:
+ 573791d5ca4e7e65ce5194a59312c2ffb552d862           230212 Packages
+ 7072e9a7bd1b569592bcb04ebd0943a6ce81c66d            41655 Packages.gz
+ bbcc403066d761eb6040f9426f2e7ff5d6ec0201               68 Release
+SHA256:
+ 4cad4ab0ba0b2e1c0a09d6e8106a83db082603d6dbe8deaed7cb5aa028060f68           230212 Packages
+ d9472b2a2a70a2a029268ea2b6e7feb59b11f7283c00e5efe4912a3b7c358ee4            41655 Packages.gz
+ aa438a17ec9ff6e4d5725d6fa6f9afc2296aba5170e3b553fa9921f5095f8be5               68 Release
+SHA512:
+ e07b178e55aeac15ebe2da761fe017ee7d0e9f634fe09c39883df7a46f2aa3c7b7f8a7df7a9082ba9e0cfa05e1be5efa276ed5dbb0e807c7bfca6a879a32a50d           230212 Packages
+ 0ab7c15663c51ac9f6609fa985cca63f5692fc8330f10b03e7d53a081ace1c9f9eef949309627e235c454edb3de299a62c808a789d53a3e38b6750f9f1ec156b            41655 Packages.gz
+ c0c476ef3a41163fc5e5673c564cb7c70c6fadd2e2e9a9bf7cc88ce72776b45b4c9ac84f80cc9eafafe945581f856cae5e2d473e7fedea34f06aad8cd0d3c95b               68 Release
+-----BEGIN PGP SIGNATURE-----
+
+iQJLBAEBCgA1FiEEb03deYxGy/GR9vy/sp02ABwZjREFAmrTwuYXHHRvbWFzLmJh
+Y2FAZmVsLmN2dXQuY3oACgkQsp02ABwZjREdpw//a8Lm78wMIeUt4B4+RM0m6y4J
+SX1BXjx6pOWZqmSOpAnIxW2KGofHuxc7wyBN1QQltiMJmsmI1VAX/69H2eURgFj/
+rRmSu3cg12I8RwSuSYS8inMxTXaUL+WEq9AnSlFW3OxARB771c7aNB3UzwvmGZ3U
+EKW8WCKFlqD7x5+KkemUdrTOy9+3O8yf/tUeqyn2VxTdNrGUGTfceZmKN724GEm3
+yXVCxThzWeLXhXPoTmNOGeKUp2VXY+UG5QG4C0UEmQF4RU5OIAhWqL2noLVJzH9K
+W7rFZny7wMSf4G/PHg3jMA42d/9mLZudnbCZwnWSxD6HtNspN21hYJG5/9pYwDQ/
+chMFbAAJVjQhr/i107jIYAFvyytbwnt7veWY7Cprld3Dy0m+wzpFfvhC+F1ymvKO
+8vNhlByfDOrewyzBvvptVkDxjl+8SxssAMRwrBoPBZ3tJtYYTf4WWg7AP8caqueB
+T4iJR4g+CQFM/fgTB88aekvxPZw58oq8+2NCUi7PwJ+2217AiFscNl9tHFIIkSiE
+N17NOTWBpWtZY2qirmUMSI1BieZ/ZeRmKkvc7D1FVKN3TIcKCgmi60iVLOdi0YHa
+K2ogTN4x9VSbMlONRLbmfdhkJ+Dw6aC+SYJ7JWOjbZcbowwaxtYbLl16i79bcx0P
+8egeip8ufBvTYqgFiFM=
+=kRO1
+-----END PGP SIGNATURE-----
